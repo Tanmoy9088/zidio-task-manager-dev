@@ -2,7 +2,7 @@ import React from "react";
 
 const Careers = () => {
   return (
-    <div className="flex flex-col md:flex-row gap-8 ">
+    <div className="flex flex-col md:flex-row gap-8 pt-20">
       {/* Left Section */}
       <div className="w-1/2 bg-blue-50 rounded-lg p-6  flex flex-col justify-center items-center shadow-lg">
         <h2 className="text-3xl font-bold text-blue-600 mb-4">Zidio Task Management</h2>

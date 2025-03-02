@@ -3,7 +3,7 @@ import { ClipboardList, GitBranch, Users, BarChart } from 'lucide-react';
 
 const Services = () => {
   return (
-    <div className="flex flex-col items-center bg-white pt-20">
+    <div className="flex flex-col items-center pt-20">
       <div className="bg-blue-50 p-10 rounded-2xl shadow-lg max-w-4xl w-full">
         <h1 className="text-3xl font-bold text-center text-blue-600 mb-6">Our Services</h1>
 

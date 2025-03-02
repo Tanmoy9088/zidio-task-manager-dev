@@ -71,7 +71,7 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen">
+    <div className="flex flex-col md:flex-row min-h-screen pt-20">
       {/* Sidebar */}
       <aside className="w-full md:w-1/4 lg:w-1/5 bg-gray-800 text-white rounded-md p-4 md:h-screen">
         <h2 className="text-xl font-bold mb-4">Zidio Task Manager</h2>

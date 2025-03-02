@@ -36,7 +36,7 @@ function Contact() {
   };
 
   return (
-    <div className=" contact-container flex flex-col items-center justify-center">
+    <div className="bg-blue-50 contact-container flex flex-col items-center justify-center pt-20">
       <div className=" contact-card max-w-4xl w-full bg-blue-50 shadow-xl rounded-lg p-8">
         <h2 className=" contact-title text-3xl font-bold text-center text-gray-800 mb-6">
           Contact Us

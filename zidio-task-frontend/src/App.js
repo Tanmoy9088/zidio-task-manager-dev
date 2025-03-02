@@ -21,7 +21,7 @@ const App = () => {
   return (
     <Router>
         <Navbar />
-      <main className="container mx-auto pt-20">
+      <main className="container mx-auto ">
       
         <Routes>
           <Route path="/login" element={<Auth isSignup={false} />} />

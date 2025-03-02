@@ -46,7 +46,7 @@ const About = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-blue-50 py-10 px-4 shadow-lg rounded-lg">
+    <div className="min-h-screen bg-blue-100 py-10 px-4 shadow-lg rounded-lg pt-20">
       <div className="max-w-4xl mx-auto text-center">
         <h1 className="text-4xl font-bold text-gray-800 mb-4">Meet Our Team</h1>
         <p className="text-xl white-600 mb-8">{aboutInfo.team}</p>
@@ -56,7 +56,7 @@ const About = () => {
       </div>
       <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8">
         {teamMembers.map((member, index) => (
-          <div key={index} className="bg- shadow-md rounded-lg p-4 text-center">
+          <div key={index} className="bg-white shadow-md rounded-lg p-4 text-center">
             <img
               src={member.image}
               alt={member.name}
