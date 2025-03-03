@@ -4,7 +4,7 @@ import { FaBars, FaTimes } from "react-icons/fa";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   return (
     <nav className="bg-green-200 text-gray-700 shadow-md fixed w-full top-0 left-0 z-50 h-16 flex items-center">
       <div className="container mx-auto flex justify-between items-center p-4">
@@ -29,7 +29,7 @@ const Navbar = () => {
           <NavItem to="/services" text="Services" />
           <NavItem to="/careers" text="Careers" />
           <NavItem to="/contact" text="Contact" />
-          <NavItem to="/login" text="Sign in" />
+          <NavItem to="/profile" text="Profile" />
         </ul>
 
         {/* Mobile Menu */}
@@ -62,9 +62,11 @@ const Navbar = () => {
               onClick={() => setIsOpen(false)}
             />
             <NavItem
-              to="/login"
-              text="Sign up/ Sign up"
-              onClick={() => setIsOpen(false)}
+            to="/profile"
+            text="Profile"
+            onClick={()=>setIsOpen(false)
+
+            }
             />
           </ul>
         )}

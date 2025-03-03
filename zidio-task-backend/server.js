@@ -4,6 +4,7 @@ const { Server } = require("socket.io");
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 // const nodemailer = require("nodemailer");
 const bodyParser = require("body-parser");
 const connectDB = require("./config/db");
@@ -27,13 +28,17 @@ const io = new Server(server, {
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use("/api/login", authRoutes);
-app.use("/api/signup", authRoutes);
+app.use("/api/auth", authRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/about", aboutRoutes); // Add About API Route
 app.use("/api/feedback", feedbackRoutes);
+app.use(cookieParser());
 
 
+app.post("/api/set-token", (req, res) => {
+  res.cookie("authToken", req.body.token, { httpOnly: true, secure: true });
+  res.json({ msg: "Token stored in cookies" });
+});
 // ✅ Create a Task and Broadcast the Event
 app.post("/api/tasks", async (req, res) => {
   try {
