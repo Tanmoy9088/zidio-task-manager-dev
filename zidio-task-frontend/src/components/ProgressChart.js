@@ -42,7 +42,7 @@ const ProgressChart = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/api/tasks");
+      const response = await axios.get("http://localhost:4000/tasks");
       setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);

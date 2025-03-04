@@ -38,7 +38,7 @@ const AddTask = () => {
     };
 
     try {
-      const response = await axios.post("http://localhost:4000/api/tasks", newTask);
+      const response = await axios.post("http://localhost:4000/tasks", newTask);
       socket.emit("taskAdded", response.data);
       setTitle("");
       setPriority("Medium");

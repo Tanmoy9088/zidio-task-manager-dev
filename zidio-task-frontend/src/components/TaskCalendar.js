@@ -4,6 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import socket from "../utils/socket";
+import axios from "axios";
 // import { io } from "socket.io-client";
 
 // const socket = io("http://localhost:4000");
@@ -14,28 +15,47 @@ const TaskCalendar = () => {
   useEffect(() => {
     fetchTasks();
 
-    // Listen for real-time updates
-    socket.on("taskUpdated", () => {
-      fetchTasks();
+    // ✅ Listen for new tasks added in real-time
+    socket.on("taskAdded", (newTask) => {
+      setTasks((prevTasks) => [...prevTasks, newTask]);
     });
 
-    return () => socket.off("taskUpdated");
-  }, []);
+    socket.on("taskUpdated", (updatedTask) => {
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task._id === updatedTask._id ? updatedTask : task
+        )
+      );
+    });
 
+    socket.on("taskDeleted", (taskId) => {
+      setTasks((prevTasks) => prevTasks.filter((task) => task._id !== taskId));
+    });
+
+    return () => {
+      socket.off("taskAdded");
+      socket.off("taskUpdated");
+      socket.off("taskDeleted");
+    };
+  }, []);
   const fetchTasks = async () => {
-    const response = await fetch("http://localhost:4000/api/tasks");
-    const data = await response.json();
-    setTasks(data);
+    try {
+      const response = await axios.get("http://localhost:4000/tasks/");
+      setTasks(response.data);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
   };
 
   return (
     <div className="h-[70vh] w-full">
       <FullCalendar
+        timeZone="IST"
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         events={tasks.map((task) => ({
           id: task._id,
-          title: task.title,
+          title: task.status === "completed" ? `✅${task.title}` : task.title,
           start: task.dueDate,
           backgroundColor:
             task.priority === "High"

@@ -35,12 +35,12 @@ app.use("/api/feedback", feedbackRoutes);
 app.use(cookieParser());
 
 
-app.post("/api/set-token", (req, res) => {
+app.post("/set-token", (req, res) => {
   res.cookie("authToken", req.body.token, { httpOnly: true, secure: true });
   res.json({ msg: "Token stored in cookies" });
 });
 // ✅ Create a Task and Broadcast the Event
-app.post("/api/tasks", async (req, res) => {
+app.post("/tasks", async (req, res) => {
   try {
     const task = new Task(req.body);
     await task.save();
@@ -50,12 +50,12 @@ app.post("/api/tasks", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-app.get("/api/tasks", async (req, res) => {
+app.get("/tasks", async (req, res) => {
   const tasks = await Task.find();
   res.json(tasks);
 });
 // ✅ Emit updates when a task is updated
-app.put("/api/tasks/:id", async (req, res) => {
+app.put("/tasks/:id", async (req, res) => {
   try {
     const { status } = req.body;
     const updatedTask = await Task.findByIdAndUpdate(
@@ -74,8 +74,21 @@ app.put("/api/tasks/:id", async (req, res) => {
     res.status(500).json({ error: "Failed to update task" });
   }
 });
+// ✅ Delete Task (Real-Time)
+app.delete("/tasks/:id", async (req, res) => {
+  try {
+      const task = await Task.findByIdAndDelete(req.params.id);
+
+      if (!task) return res.status(404).json({ error: "Task not found" });
+
+      io.emit("taskDeleted", task._id); // Emit event to all clients
+      res.json({ message: "Task deleted" });
+  } catch (error) {
+      res.status(500).json({ error: "Error deleting task" });
+  }
+});
 // Get tasks by priority
-app.get("/api/tasks/filter/:priority", async (req, res) => {
+app.get("/tasks/filter/:priority", async (req, res) => {
   try {
     const tasks = await Task.find({ priority: req.params.priority });
     res.json(tasks);
@@ -84,7 +97,7 @@ app.get("/api/tasks/filter/:priority", async (req, res) => {
   }
 });
 // Get tasks completed in a given time frame
-app.get("/api/tasks/progress/:timeframe", async (req, res) => {
+app.get("/tasks/progress/:timeframe", async (req, res) => {
   try {
     let dateRange;
     const now = new Date();

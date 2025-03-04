@@ -8,25 +8,14 @@ import socket from "../utils/socket";
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState("All");
-
-  //Sorted tasks by Ascending
-  const [sortOrder, setSortOrder] = useState("asc");
-  const sortedTasks = [...tasks].sort((a, b) =>
-    sortOrder === "asc"
-      ? new Date(a.dueDate) - new Date(b.dueDate)
-      : new Date(b.dueDate) - new Date(a.dueDate)
-  );
-
   useEffect(() => {
-    let url = "http://localhost:4000/tasks";
+    let url = "http://localhost:4000/api/tasks";
     if (filter !== "All") url += `/filter/${filter}`;
 
     fetch(url)
       .then((res) => res.json())
       .then((data) => setTasks(data));
   }, [filter]);
-
-
   useEffect(() => {
     fetchTasks();
 
@@ -56,7 +45,7 @@ const TaskList = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/tasks/");
+      const response = await axios.get("http://localhost:4000/api/tasks/");
       setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -66,7 +55,7 @@ const TaskList = () => {
   // ✅ Delete Task
   const handleDelete = async (taskId) => {
     try {
-      await axios.delete(`http://localhost:4000/tasks/${taskId}`);
+      await axios.delete(`http://localhost:4000/api/tasks/${taskId}`);
       setTasks(tasks.filter((task) => task._id !== taskId)); // Remove task from UI
     } catch (error) {
       console.error("Error deleting task:", error);
@@ -77,10 +66,10 @@ const TaskList = () => {
   const toggleTaskStatus = async (taskId, currentStatus) => {
     try {
       const updatedTask = await axios.put(
-        `http://localhost:4000/tasks/${taskId}`,
+        `http://localhost:4000/api/tasks/${taskId}`,
         {
           status: currentStatus === "pending" ? "completed" : "pending",
-          progress: tasks.status === "completed" ? "100" : "0",
+          progress: tasks.status=== "completed"? "100":"0",
         }
       );
 
@@ -97,8 +86,8 @@ const TaskList = () => {
   };
 
   return (
-    <div className="bg-blue-100 px-0  pt-2 w-100 h-[400px] rounded-lg shadow-lg">
-      <h2 className="text-center text-lg font-bold ">Task List</h2>
+    <div className="bg-blue-100 px-0 w-100 rounded-lg shadow-lg pt-20 mt-6">
+      <h2 className="text-center text-2xl font-bold ">Task List</h2>
       <select
         className="bg-yellow-50 mt-2 rounded-lg shadow-md border-spacing-1"
         onChange={(e) => setFilter(e.target.value)}
@@ -113,7 +102,7 @@ const TaskList = () => {
           <p className="text-center text-gray-500">No tasks found.</p>
         ) : (
           <ul>
-            {sortedTasks.map((task) => (
+            {tasks.map((task) => (
               <li
                 key={task._id}
                 className="flex justify-between items-center p-3 border-b"
@@ -142,6 +131,7 @@ const TaskList = () => {
                   <p className="text-sm text-gray-500">
                     Priority: {task.priority} | Deadline:{" "}
                     {new Date(task.dueDate).toLocaleDateString()}
+                   
                   </p>
                 </div>
                 <div className="flex gap-2">

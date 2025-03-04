@@ -7,7 +7,7 @@ const authMiddleware = require("../middleware/authMiddleware");
 router.post("/api/", async (req, res) => {
   try {
     const { title, description, priority, dueDate, subtasks } = req.body;
-    const newTask = new Task({ title, description, priority, dueDate, subtasks });
+    const newTask = new Task({ title, description, priority, dueDate: new Date , subtasks });
     await newTask.save();
     res.status(201).json(newTask);
   } catch (error) {
@@ -35,31 +35,32 @@ router.get("/api/:id", async (req, res) => {
     res.status(500).json({ error: "Error fetching task" });
   }
 });
-
-// ✅ 4. Update a Task (PUT /tasks/:id)
-router.put("/api/:id", async (req, res) => {
+router.put("/tasks/:id/status", async (req, res) => {
   try {
-     const { status } = req.body;
-     let progress = 0;
- 
-     if (status === "pending") progress = 0;
-     if (status === "in-progress") progress = 50;
-     if (status === "completed") progress = 100;
- 
-     const updatedTask = await Task.findByIdAndUpdate(
-       req.params.id,
-       { status, progress },
-       { new: true }
-     );
- 
- 
-     if (!updatedTask) return res.status(404).json({ error: "Task not found" });
- 
-     res.status(200).json(updatedTask);
-   } catch (error) {
-     res.status(500).json({ error: "Failed to update task status" });
-   }
- });
+    const { status } = req.body;
+    let progress = 0;
+
+    if (status === "Pending") progress = 0;
+    if (status === "In Progress") progress = 50;
+    if (status === "Completed") progress = 100;
+
+    const updatedTask = await Task.findByIdAndUpdate(
+      req.params.id,
+      { status, progress },
+      { new: true }
+    );
+
+    if (!updatedTask) {
+      return res.status(404).json({ error: "Task not found" });
+    }
+
+    res.json(updatedTask);
+  } catch (error) {
+    console.error("Error updating task status:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 
 // ✅ 5. Delete a Task (DELETE /tasks/:id)
 router.delete("/:id", async (req, res) => {

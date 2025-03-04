@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import {toast} from "react-toastify"
+import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
 // import Calendar from "react-calendar";
 // import { Bar } from "react-chartjs-2";
+
 import "react-calendar/dist/Calendar.css";
 import TaskList from "../components/TaskList";
 import TaskCalendar from "../components/TaskCalendar";
@@ -10,12 +12,14 @@ import RealTimeChart from "../components/RealTimeChart";
 import ProgressChart from "../components/ProgressChart";
 import { io } from "socket.io-client";
 import AddTask from "../components/AddTask";
+import TaskProgressChart from "../components/TaskProgressChart";
+import TaskPriorityChart from "../components/TaskPriorityChart";
 
 const socket = io("http://localhost:4000"); //backend url
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
-   // Fetch tasks from backend
-   const fetchTasks = async () => {
+  // Fetch tasks from backend
+  const fetchTasks = async () => {
     try {
       const response = await axios.get("http://localhost:4000/api/tasks");
       setTasks(response.data);
@@ -28,7 +32,10 @@ const Dashboard = () => {
   // Add a new task
   const handleAddTask = async (task) => {
     try {
-      const response = await axios.post("http://localhost:4000/api/tasks", task);
+      const response = await axios.post(
+        "http://localhost:4000/api/tasks",
+        task
+      );
       const newTask = response.data;
       setTasks([...tasks, newTask]);
 
@@ -41,7 +48,7 @@ const Dashboard = () => {
       toast.error("Failed to add task!");
     }
   };
-  
+
   // Real-time updates using Socket.IO
   useEffect(() => {
     fetchTasks();
@@ -54,7 +61,7 @@ const Dashboard = () => {
     return () => socket.disconnect();
   }, []);
 
-//   const [tasks, setTasks] = useState([]);
+  //   const [tasks, setTasks] = useState([]);
 
   // Fetch tasks from the backend
   useEffect(() => {
@@ -74,17 +81,39 @@ const Dashboard = () => {
     <div className="flex flex-col md:flex-row min-h-screen pt-20">
       {/* Sidebar */}
       <aside className="w-full md:w-1/4 lg:w-1/5 bg-gray-800 text-white rounded-md p-4 md:h-screen">
-        <h2 className="text-xl font-bold mb-4">Zidio Task Manager</h2>
         <nav className="space-y-3">
-          <a href="#" className="block px-3 py-2 rounded-md bg-blue-800">
-            Dashboard
-          </a>
-          <a href="#" className="block px-3 py-2 hover:bg-blue-700 rounded-md">
-            Tasks
-          </a>
-          <a href="#" className="block px-3 py-2 hover:bg-blue-700 rounded-md">
-            Analytics
-          </a>
+          <h2 className="text-2xl font-bold mb-6">Task Manager</h2>
+          <ul className="space-y-4">
+            <li>
+              <Link
+                to="/dashboard"
+                className="block py-2 px-4 hover:bg-gray-700 rounded"
+              >
+                📊 Dashboard
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/tasks"
+                className="block py-2 px-4 hover:bg-gray-700 rounded"
+              >
+                ✅ Tasks
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/analytics"
+                className="block py-2 px-4 hover:bg-gray-700 rounded"
+              >
+                📈 Analytics
+              </Link>
+            </li>
+            <li>
+              <button className="w-full text-left py-2 px-4 bg-red-600 hover:bg-red-700 rounded">
+                🔒 Logout
+              </button>
+            </li>
+          </ul>
         </nav>
       </aside>
 
@@ -98,16 +127,19 @@ const Dashboard = () => {
 
           {/* Task List */}
           <div className="col-span-1 lg:col-span-1 ">
-            <TaskList tasks={tasks} setTasks={setTasks}/>
+            <TaskList tasks={tasks} setTasks={setTasks} />
           </div>
 
           {/* Progress Chart */}
-          <div className="col-span-1 lg:col-span-1">
+          <div className="">
             <ProgressChart tasks={tasks} />
           </div>
-          <div>
-            {/* <RealTimeChart/> */}
-          </div>
+        </div>
+        <div>
+          <TaskPriorityChart />
+        </div>
+        <div className="">
+          <TaskProgressChart />
         </div>
 
         {/* Calendar View */}
