@@ -17,11 +17,13 @@ import TaskPriorityChart from "../components/TaskPriorityChart";
 
 const socket = io("http://localhost:4000"); //backend url
 const Dashboard = () => {
+
   const [tasks, setTasks] = useState([]);
+
   // Fetch tasks from backend
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/api/tasks");
+      const response = await axios.get("http://localhost:4000/tasks");
       setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -33,7 +35,7 @@ const Dashboard = () => {
   const handleAddTask = async (task) => {
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/tasks",
+        "http://localhost:4000/tasks",
         task
       );
       const newTask = response.data;
@@ -67,7 +69,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await fetch("http://localhost:4000/api/tasks");
+        const response = await fetch("http://localhost:4000/tasks");
         const data = await response.json();
         setTasks(data);
       } catch (error) {
@@ -78,9 +80,9 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="flex flex-col md:flex-row min-h-screen pt-20">
+    <div className="flex flex-col md:flex-row min-h-screen ">
       {/* Sidebar */}
-      <aside className="w-full md:w-1/4 lg:w-1/5 bg-gray-800 text-white rounded-md p-4 md:h-screen">
+      {/* <aside className="w-full md:w-1/4 lg:w-1/5 bg-gray-800 text-white rounded-md p-4 md:h-screen">
         <nav className="space-y-3">
           <h2 className="text-2xl font-bold mb-6">Task Manager</h2>
           <ul className="space-y-4">
@@ -115,7 +117,7 @@ const Dashboard = () => {
             </li>
           </ul>
         </nav>
-      </aside>
+      </aside> */}
 
       {/* Main Content */}
       <main className="flex-1 p-4">
@@ -126,7 +128,7 @@ const Dashboard = () => {
           </div>
 
           {/* Task List */}
-          <div className="col-span-1 lg:col-span-1 ">
+          <div className="col-span-1 lg:col-span-1">
             <TaskList tasks={tasks} setTasks={setTasks} />
           </div>
 
@@ -139,7 +141,7 @@ const Dashboard = () => {
           <TaskPriorityChart />
         </div>
         <div className="">
-          <TaskProgressChart />
+          <TaskProgressChart tasks={tasks}/>
         </div>
 
         {/* Calendar View */}

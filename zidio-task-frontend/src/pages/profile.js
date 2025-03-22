@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const Profile = ({ user,handleLogout }) => {
-    const [dropdownOpen, setDropdownOpen] = useState(false);
-    return (
-      <div className="max-w-md mx-auto p-6 bg-white shadow-lg mt-10">
-     {/* Logo */}
-     <Link to="/" className="text-white font-bold text-lg">
+const Profile = ({ user, handleLogout }) => {
+ 
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  return (
+    <div className="max-w-md mx-auto p-6 bg-white shadow-lg mt-10">
+      {/* Logo */}
+      <Link to="/" className="text-white font-bold text-lg">
         Task Manager
       </Link>
 
@@ -21,7 +22,9 @@ const Profile = ({ user,handleLogout }) => {
             alt="User Avatar"
             className="w-10 h-10 rounded-full border-2 border-white"
           />
-          <span className="text-white font-medium">{user?.name || "Guest"}</span>
+          <span className="text-white font-medium">
+            {user?.name || "Guest"}
+          </span>
         </button>
 
         {/* Dropdown Menu */}
@@ -38,18 +41,12 @@ const Profile = ({ user,handleLogout }) => {
             >
               View Profile
             </Link>
-            <button
-              onClick={handleLogout}
-              className="w-full text-left px-4 py-2 hover:bg-red-100 text-red-600"
-            >
-              Logout
-            </button>
+            
           </div>
         )}
       </div>
-      </div>
-    );
-  };
-  
-  export default Profile;
-  
+    </div>
+  );
+};
+
+export default Profile;

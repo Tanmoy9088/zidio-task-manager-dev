@@ -29,7 +29,7 @@ const Home = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 1 }}
       >
-        <Link to="/dashboard">
+        <Link to="/auth/google/dashboard">
           <motion.button
             className="px-6 py-3 bg-white text-blue-600 font-bold rounded-lg shadow-lg hover:bg-gray-200"
             whileHover={{ scale: 1.1 }}

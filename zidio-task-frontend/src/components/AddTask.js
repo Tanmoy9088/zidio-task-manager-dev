@@ -51,7 +51,7 @@ const AddTask = () => {
   };
 
   return (
-    <div className="bg-blue-300 px-6 pt-2 rounded-lg shadow-lg w-full h-[400px] max-w-lg mx-auto">
+    <div className="bg-blue-300 px-6 pt-2 rounded-lg shadow-lg w-full h-[450px] max-w-lg mx-auto">
       <h2 className="text-xl font-bold text-gray-700 mb-4">Add New Task</h2>
 
       <form onSubmit={handleAddTask} className="space-y-4">
@@ -95,27 +95,35 @@ const AddTask = () => {
 
         {/* Subtasks Input */}
         <div>
-          <div className="flex">
-            <input
-              type="text"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              placeholder="Add subtask..."
-              value={subtaskInput}
-              onChange={(e) => setSubtaskInput(e.target.value)}
-            />
-            <button
-              type="button"
-              onClick={handleAddSubtask}
-              className="ml-2 px-4 py-2 bg-green-500 text-white rounded-lg"
-            >
-              +
-            </button>
+          <div className="flex overflow-auto">
+          {subtasks.map((subtask, index) => (
+                    <input
+                        key={index}
+                        type="text"
+                        placeholder={`Subtask ${index + 1}`}
+                        value={subtask}
+                        onChange={(e) =>
+                            setSubtasks((prev) =>
+                                prev.map((s, i) => (i === index ? e.target.value : s))
+                            )
+                        }
+                        className="border px-4 py-2 rounded w-full mb-3 focus:ring-2 focus:ring-blue-400"
+                    />
+                ))}
+                
+                <button
+                    type="button"
+                    onClick={() => setSubtasks([...subtasks, ""])}
+                    className="text-blue-600 mb-3"
+                >
+                    + Add Subtask
+                </button>
           </div>
-          <ul className="mt-2 space-y-1">
+          <ul className=" max-h-[50px] overflow-auto mt-2 space-y-1">
             {subtasks.map((subtask, index) => (
               <li
                 key={index}
-                className="flex items-center justify-between p-2 bg-gray-100 rounded-md"
+                className="flex  items-center justify-between p-2 bg-gray-100 rounded-md"
               >
                 {subtask}
                 <button

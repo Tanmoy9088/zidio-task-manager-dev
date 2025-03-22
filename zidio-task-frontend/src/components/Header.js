@@ -11,7 +11,7 @@ const Header = () => {
         <nav>
           <ul className="flex space-x-6 bg-blue-50 p-3 rounded-lg">
             {[
-              { name: "HOME", path: "/" },
+              { name: "HOME", path: "/home" },
               { name: "DASHBOARD", path: "/dashboard" },
               { name: "ABOUT", path: "/about" },
               { name: "SERVICES", path: "/services" },

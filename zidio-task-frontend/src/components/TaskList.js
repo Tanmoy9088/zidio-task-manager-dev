@@ -74,20 +74,20 @@ const TaskList = () => {
   };
 
   // ✅ Toggle Task Status (Complete/Pending)
-  const toggleTaskStatus = async (taskId, currentStatus) => {
+  const toggleTaskStatus = async (taskId, currentStatus, newProgress) => {
     try {
       const updatedTask = await axios.put(
         `http://localhost:4000/tasks/${taskId}`,
         {
           status: currentStatus === "pending" ? "completed" : "pending",
-          progress: tasks.status === "completed" ? "100" : "0",
+          progress: currentStatus === "pending" ? 100 : 0,
         }
       );
 
       setTasks(
         tasks.map((task) =>
           task._id === taskId
-            ? { ...task, status: updatedTask.data.status }
+            ? { ...task, status: updatedTask.data.status, progress: updatedTask.data.progress }
             : task
         )
       );
@@ -132,15 +132,15 @@ const TaskList = () => {
                     <ul className="ml-4">
                       {task.subtasks.map((subtask, index) => (
                         <li key={index} className="text-gray-600">
-                          {subtask.completed ? "✅" : "⏳"} {subtask.title}
+                          {task.status==="completed" ? "✅" : "⏳"} {task.subtasks}
                         </li>
                       ))}
                     </ul>
-                  ) : (
+                  )  : (
                     <p className="text-gray-400">No subtasks</p>
                   )}
                   <p className="text-sm text-gray-500">
-                    Priority: {task.priority} | Deadline:{" "}
+                    Priority: {task.priority} | Progress:{task.progress } | Deadline:{" "} 
                     {new Date(task.dueDate).toLocaleDateString()}
                   </p>
                 </div>
@@ -152,7 +152,7 @@ const TaskList = () => {
                         : "bg-green-500 text-white"
                     }`}
                     onClick={() =>
-                      toggleTaskStatus(toggleTaskStatus(task._id, task.status))
+                      toggleTaskStatus(task._id, task.status)
                     }
                   >
                     {task.status === "completed" ? "Mark Pending" : "Complete"}

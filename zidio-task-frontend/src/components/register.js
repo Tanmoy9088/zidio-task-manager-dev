@@ -1,41 +1,42 @@
-import React, { useEffect, useState, useContext } from "react";
 import Textbox from "../components/Textbox";
 import Button from "../components/Button";
 import axios from "axios";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { GoogleLogin } from "@react-oauth/google";
-import { registerUser, loginUser } from "../api";
-import { AuthContext } from "../context/authContext";
 import GoogleLogin from "./GoogleLogin";
 
-const Login = () => {
+const Register = () => {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:4000/login", {
+      const response = await axios.post("http://localhost:4000/register", {
+        username,
         email,
         password,
       });
-      if (response.status === 200) {
+      console.log(response);
+
+      if (response.status === 201) {
         alert(response.data.message);
 
-        // Store token in localStorage or sessionStorage
-        localStorage.setItem("token", response.data.token);
-
-        // Redirect to home page after login
+        // Redirect to home page after successful registration
         navigate("/home");
       }
     } catch (error) {
-      if (error.response && error.response.status === 400) {
-        alert("Register first");
-        navigate("/register");
+      console.error(error);
+      if (error.response && error.response.status === 409) {
+        // If email already registered, redirect to login page
+        navigate("/");
+      } else if (error.response && error.response.status === 409) {
+        // If email already registered, redirect to login page
+        alert("Username is already taken");
       } else {
-        alert(error || "Login failed");
+        alert(error.response?.data?.message || "Registration failed");
       }
     }
   };
@@ -68,7 +69,7 @@ const Login = () => {
           >
             <div className="">
               <p className="text-blue-600 text-3xl font-bold text-center">
-                Welcome back!
+                Welcome!
               </p>
               <p className="text-center text-base text-gray-700 ">
                 Keep all your credential safe.
@@ -76,16 +77,16 @@ const Login = () => {
             </div>
 
             <div className="flex flex-col gap-y-5">
-              {/* <Textbox
+              <Textbox
                 placeholder="username"
                 type="text"
                 name="username"
                 label="Username"
                 className="w-full rounded-full"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
-              ></Textbox> */}
+              ></Textbox>
 
               <Textbox
                 placeholder="email@example.com"
@@ -105,6 +106,7 @@ const Login = () => {
                 className="w-full rounded-full"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
 
               <span className="text-sm text-gray-500 hover:text-blue-600 hover:underline cursor-pointer">
@@ -112,22 +114,28 @@ const Login = () => {
               </span>
               <Button
                 type="submit"
-                label="Login"
+                label="Register"
                 className="w-full h-10 bg-blue-700 text-white rounded-full"
               ></Button>
-              <div>
-                <p className="text-center">Not Registered?<Button className={"text-blue-500"} onClick={handleSubmit} label={"Sign Up"}></Button></p>
-              </div>
-            
-                  <GoogleLogin />  
+              {/* <Button
+              type="submit"
+              label="Submit"
+              className="w-full h-10 bg-blue-700 text-white rounded-full"
+            /> */}
+              {/* <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onFailure={handleGoogleFailure}
+              cookiePolicy={"single_host_origin"}
+            /> */}
+              <GoogleLogin />
             </div>
             <p
               className="text-center"
               //   onClick={() => setIsRegistering(!isRegistering)}
             >
               {/* {isRegistering
-                ? "Already have an account? Login"
-                : `Don't have an account? Register`} */}
+              ? "Already have an account? Login"
+              : `Don't have an account? Register`} */}
             </p>
           </form>
         </div>
@@ -136,4 +144,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;

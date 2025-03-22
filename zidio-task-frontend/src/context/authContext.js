@@ -1,35 +1,35 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { auth } from "../firebaseConfig"
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { createContext, useState, useEffect } from "react";
 
-const AuthContext = createContext();
+// Create Context
+export const AuthContext = createContext();
 
+// AuthProvider
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
+  // Check local storage for token when the app loads
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      if (currentUser) {
-        localStorage.setItem("userToken", currentUser.accessToken);
-      } else {
-        localStorage.removeItem("userToken");
-      }
-    });
-    return () => unsubscribe();
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) setUser(JSON.parse(storedUser));
   }, []);
 
-  const logout = async () => {
-    await signOut(auth);
+  const login = (userData) => {
+    setUser(userData);
+    localStorage.setItem("user", JSON.stringify(userData));
+  };
+  const register = (userData) => {
+    setUser(userData);
+    localStorage.setItem("user", JSON.stringify(userData));
+  };
+
+  const logout = () => {
     setUser(null);
-    localStorage.removeItem("userToken");
+    localStorage.removeItem("user");
   };
 
   return (
-    <AuthContext.Provider value={{ user, logout }}>
+    <AuthContext.Provider value={{ user, setUser, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
-
-export const useAuth = () => useContext(AuthContext);

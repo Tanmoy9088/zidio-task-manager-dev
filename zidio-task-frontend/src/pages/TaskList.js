@@ -8,14 +8,25 @@ import socket from "../utils/socket";
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState("All");
+
+  //Sorted tasks by Ascending
+  const [sortOrder, setSortOrder] = useState("asc");
+  const sortedTasks = [...tasks].sort((a, b) =>
+    sortOrder === "asc"
+      ? new Date(a.dueDate) - new Date(b.dueDate)
+      : new Date(b.dueDate) - new Date(a.dueDate)
+  );
+
   useEffect(() => {
-    let url = "http://localhost:4000/api/tasks";
+    let url = "http://localhost:4000/tasks";
     if (filter !== "All") url += `/filter/${filter}`;
 
     fetch(url)
       .then((res) => res.json())
       .then((data) => setTasks(data));
   }, [filter]);
+
+
   useEffect(() => {
     fetchTasks();
 
@@ -45,7 +56,7 @@ const TaskList = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("http://localhost:4000/api/tasks/");
+      const response = await axios.get("http://localhost:4000/tasks/");
       setTasks(response.data);
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -55,7 +66,7 @@ const TaskList = () => {
   // ✅ Delete Task
   const handleDelete = async (taskId) => {
     try {
-      await axios.delete(`http://localhost:4000/api/tasks/${taskId}`);
+      await axios.delete(`http://localhost:4000/tasks/${taskId}`);
       setTasks(tasks.filter((task) => task._id !== taskId)); // Remove task from UI
     } catch (error) {
       console.error("Error deleting task:", error);
@@ -63,20 +74,20 @@ const TaskList = () => {
   };
 
   // ✅ Toggle Task Status (Complete/Pending)
-  const toggleTaskStatus = async (taskId, currentStatus) => {
+  const toggleTaskStatus = async (taskId, currentStatus, newProgress) => {
     try {
       const updatedTask = await axios.put(
-        `http://localhost:4000/api/tasks/${taskId}`,
+        `http://localhost:4000/tasks/${taskId}`,
         {
           status: currentStatus === "pending" ? "completed" : "pending",
-          progress: tasks.status=== "completed"? "100":"0",
+          progress: currentStatus === "pending" ? 100 : 0,
         }
       );
 
       setTasks(
         tasks.map((task) =>
           task._id === taskId
-            ? { ...task, status: updatedTask.data.status }
+            ? { ...task, status: updatedTask.data.status, progress: updatedTask.data.progress }
             : task
         )
       );
@@ -86,8 +97,8 @@ const TaskList = () => {
   };
 
   return (
-    <div className="bg-blue-100 px-0 w-100 rounded-lg shadow-lg pt-20 mt-6">
-      <h2 className="text-center text-2xl font-bold ">Task List</h2>
+    <div className="bg-blue-100 px-0  pt-2 w-100 h-[400px] rounded-lg shadow-lg">
+      <h2 className="text-center text-lg font-bold ">Task List</h2>
       <select
         className="bg-yellow-50 mt-2 rounded-lg shadow-md border-spacing-1"
         onChange={(e) => setFilter(e.target.value)}
@@ -102,7 +113,7 @@ const TaskList = () => {
           <p className="text-center text-gray-500">No tasks found.</p>
         ) : (
           <ul>
-            {tasks.map((task) => (
+            {sortedTasks.map((task) => (
               <li
                 key={task._id}
                 className="flex justify-between items-center p-3 border-b"
@@ -121,17 +132,16 @@ const TaskList = () => {
                     <ul className="ml-4">
                       {task.subtasks.map((subtask, index) => (
                         <li key={index} className="text-gray-600">
-                          {subtask.completed ? "✅" : "⏳"} {subtask.title}
+                          {task.status==="completed" ? "✅" : "⏳"} {task.subtasks}
                         </li>
                       ))}
                     </ul>
-                  ) : (
+                  )  : (
                     <p className="text-gray-400">No subtasks</p>
                   )}
                   <p className="text-sm text-gray-500">
-                    Priority: {task.priority} | Deadline:{" "}
+                    Priority: {task.priority} | Progress:{task.progress } | Deadline:{" "} 
                     {new Date(task.dueDate).toLocaleDateString()}
-                   
                   </p>
                 </div>
                 <div className="flex gap-2">
@@ -142,7 +152,7 @@ const TaskList = () => {
                         : "bg-green-500 text-white"
                     }`}
                     onClick={() =>
-                      toggleTaskStatus(toggleTaskStatus(task._id, task.status))
+                      toggleTaskStatus(task._id, task.status)
                     }
                   >
                     {task.status === "completed" ? "Mark Pending" : "Complete"}

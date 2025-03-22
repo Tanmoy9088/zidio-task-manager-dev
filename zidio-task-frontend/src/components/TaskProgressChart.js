@@ -13,18 +13,10 @@ const TaskProgressChart = ({progress}) => {
       return () => clearInterval(interval);
     }, []);
   
-    const fetchTasks = async (taskId, newStatus) => {
+    const fetchTasks = async () => {
       try {
-        const response = await axios.put(`http://localhost:4000/api/tasks${taskId}`,{
-            status: newStatus,
-        });
-    
-        setTasks(prevTasks =>
-          prevTasks.map(task =>
-            task._id === taskId ? { ...task, status: newStatus, progress: response.data.progress } : task
-          )
-        );
-      
+        const response = await axios.get("http://localhost:4000/tasks");
+        setTasks(response.data);
       } catch (error) {
         console.error("Error fetching tasks:", error);
       }
@@ -36,7 +28,7 @@ const TaskProgressChart = ({progress}) => {
         {
           label: "Task Progress (%)",
           data: tasks.map(task => task.status==="completed"?100:0),
-          backgroundColor: tasks.map(task => (task.progress === 0 ? "#4CAF50" : "#FFA500")),
+          backgroundColor: tasks.map(task => (task.progress === 100 ? "Green" : "Red")),
         },
       ],
     };
