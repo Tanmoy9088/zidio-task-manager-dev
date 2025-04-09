@@ -129,9 +129,10 @@ app.post("/register", async (req, res) => {
     const newUser = new User({ username, email, password });
     await newUser.save();
 
-    res
-      .status(201)
-      .json({ redirect: "/dashboard", message: "User registered successfully" });
+    res.status(201).json({
+      redirect: "/dashboard",
+      message: "User registered successfully",
+    });
   } catch (error) {
     if (error.code === 11000) {
       res
@@ -166,7 +167,7 @@ app.post("/login", async (req, res) => {
     email: user.email,
     token,
   });
-  console.log({message:"login successful"});
+  console.log({ message: "login successful" });
 });
 
 // Protected Route (To Check Persistent Login)
@@ -220,12 +221,12 @@ app.put("/tasks/:id", async (req, res) => {
   }
 });
 // ✅ Delete Task (Real-Time)
-app.delete("/tasks/:id", async (req, res) => {
+app.delete("/delete/:id", async (req, res) => {
   try {
     const task = await Task.findByIdAndDelete(req.params.id);
 
     if (!task) return res.status(404).json({ error: "Task not found" });
-
+    console.log(task);
     io.emit("taskDeleted", task._id); // Emit event to all clients
     res.json({ message: "Task deleted" });
   } catch (error) {
@@ -285,6 +286,30 @@ app.post("/feedback", async (req, res) => {
   }
 });
 
+app.put("/trash/:id", async (req, res) => {
+  try {
+    const task = await Task.findByIdAndUpdate(
+      req.params.id,
+      { deleted: true },
+      { new: true }
+    );
+    res.json(task);
+  } catch (err) {
+    res.status(500).json("message:", err);
+  }
+});
+app.put("/restore/:id", async (req, res) => {
+  const task = await Task.findByIdAndUpdate(
+    req.params.id,
+    { deleted: false },
+    { new: true }
+  );
+  res.json(task);
+});
+app.get("/trash", async (req, res) => {
+  const tasks = await Task.find({ deleted: true });
+  res.json(tasks);
+});
 // Google OAuth Strategy
 
 //   new GoogleStrategy(

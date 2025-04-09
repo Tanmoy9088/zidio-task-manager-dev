@@ -38,7 +38,7 @@ const Home = () => {
             Go to Dashboard
           </motion.button>
         </Link>
-        <Link to="/login">
+        <Link to="/addtask">
           <motion.button
             className="px-6 py-3 bg-gray-900 text-white font-bold rounded-lg shadow-lg hover:bg-gray-800"
             whileHover={{ scale: 1.1 }}

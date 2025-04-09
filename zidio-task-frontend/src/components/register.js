@@ -40,7 +40,14 @@ const Register = () => {
       }
     }
   };
-
+  const handleLog = async (e) => {
+    e.preventDefault();
+    try {
+      navigate("/");
+    } catch (error) {
+      alert("error");
+    }
+  };
   return (
     <div className="w-full min-h-screen flex items-center justify-center flex-col lg:flex-row bg-[#f3f4f6]">
       <div className="w-full md:w-auto flex gap-0 md:gap-40 flex-col md:flex-row items-center justify-center">
@@ -117,27 +124,21 @@ const Register = () => {
                 label="Register"
                 className="w-full h-10 bg-blue-700 text-white rounded-full"
               ></Button>
-              {/* <Button
-              type="submit"
-              label="Submit"
-              className="w-full h-10 bg-blue-700 text-white rounded-full"
-            /> */}
-              {/* <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onFailure={handleGoogleFailure}
-              cookiePolicy={"single_host_origin"}
-            /> */}
+           
               <GoogleLogin />
             </div>
-            <p
-              className="text-center"
-              //   onClick={() => setIsRegistering(!isRegistering)}
-            >
-              {/* {isRegistering
-              ? "Already have an account? Login"
-              : `Don't have an account? Register`} */}
-            </p>
+            <div>
+                <p className="text-center">
+                  Already Registered?
+                  <Button
+                    className={"text-blue-500"}
+                    onClick={handleLog}
+                    label={"Login"}
+                  ></Button>
+                </p>
+              </div>
           </form>
+        
         </div>
       </div>
     </div>

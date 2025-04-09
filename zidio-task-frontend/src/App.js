@@ -31,6 +31,7 @@ import Login from "./components/Login";
 import ProtectedRoute from "./components/PrivateRoutes";
 import { AuthProvider } from "./context/authContext";
 import Register from "./components/register";
+import Trash from "./pages/Trash";
 
 function Layout() {
   const { user } = useSelector((state) => state.auth);
@@ -112,8 +113,6 @@ const MobileSidebar = () => {
 const App = () => {
   return (
     <AuthProvider>
-      {/* // <Navbar /> */}
-      {/* <main className="container mx-auto "> */}
       <Routes>
         <Route element={<Layout />}>
             {/* <Route path="/dashboard" element={<Dashboard />} /> */}
@@ -126,6 +125,8 @@ const App = () => {
             <Route path="/auth/google/dashboard" element={<Dashboard />} />
             <Route path="/tasks" element={<TaskList />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/trash" element={<Trash />} />
+
         </Route>
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />

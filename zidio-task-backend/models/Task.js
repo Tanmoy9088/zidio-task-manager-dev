@@ -12,6 +12,8 @@ const taskSchema = new mongoose.Schema({
   subtasks: [{type:String}],
   status: { type: String, enum: ["pending","in-progress", "completed"], default: "pending" }, // ✅ Added status field
   progress: { type: Number, default: 0 }, // ✅ Added progress field (0% by default)
+  deleted: { type: Boolean, default: false }, // New field
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   createdAt: { type: Date, default: Date.now },
 });
 

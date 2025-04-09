@@ -39,6 +39,17 @@ const Login = () => {
       }
     }
   };
+  const handleReg = async (e) => {
+    e.preventDefault();
+    try {
+      navigate("/register");
+    } catch (error) {
+      alert("error");
+    }
+  };
+  const handleForgot = async (e) => {
+    navigate("/forget");
+  };
 
   return (
     <div className="w-full min-h-screen flex items-center justify-center flex-col lg:flex-row bg-[#f3f4f6]">
@@ -106,29 +117,30 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-
-              <span className="text-sm text-gray-500 hover:text-blue-600 hover:underline cursor-pointer">
-                {/* {isRegistering ? "" : "Forget Password"} */}
-              </span>
               <Button
                 type="submit"
                 label="Login"
                 className="w-full h-10 bg-blue-700 text-white rounded-full"
               ></Button>
-              <div>
-                <p className="text-center">Not Registered?<Button className={"text-blue-500"} onClick={handleSubmit} label={"Sign Up"}></Button></p>
-              </div>
-            
-                  <GoogleLogin />  
             </div>
-            <p
-              className="text-center"
-              //   onClick={() => setIsRegistering(!isRegistering)}
-            >
-              {/* {isRegistering
-                ? "Already have an account? Login"
-                : `Don't have an account? Register`} */}
-            </p>
+            <span>
+              <Button
+                label="Forgot password?"
+                onClick={handleForgot}
+                className="w-full h-10 text-black"
+              ></Button>
+            </span>
+            <GoogleLogin />
+            <span>
+              <p className="text-center">
+                Not Registered?
+                <Button
+                  className={"text-blue-500"}
+                  onClick={handleReg}
+                  label={"Sign Up"}
+                ></Button>
+              </p>
+            </span>
           </form>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import React from "react";
 import {
   MdDashboard,
+  MdHome,
   MdOutlineAddTask,
   MdOutlinePendingActions,
   MdSettings,
@@ -14,6 +15,11 @@ import clsx from "clsx";
 
 const linkData = [
   {
+    label: "Home",
+    link: "/home",
+    icon: <MdHome />,
+  },
+  {
     label: "Dashboard",
     link: "auth/google/dashboard",
     icon: <MdDashboard />,
@@ -25,18 +31,18 @@ const linkData = [
   },
   {
     label: "Completed",
-    link: "completed/completed",
+    link: "/completed",
     icon: <MdTaskAlt />,
   },
   {
     label: "In Progress",
-    link: "in-progress/in progress",
+    link: "/in-progress",
     icon: <MdOutlinePendingActions />,
   },
   {
     label: "To Do",
-    link: "todo/todo",
-    icon: <MdOutlinePendingActions />,
+    link: "/todo",
+    icon: <MdOutlineAddTask />,
   },
   {
     label: "Team",
@@ -45,7 +51,7 @@ const linkData = [
   },
   {
     label: "Trash",
-    link: "trashed",
+    link: "/trash",
     icon: <FaTrashAlt />,
   },
 ];
@@ -75,25 +81,27 @@ const Sidebar = () => {
         )}
       >
         {el.icon}
-        <span className='hover:text-[#2564ed]'>{el.label}</span>
+        <span className="hover:text-[#2564ed]">{el.label}</span>
       </Link>
     );
   };
   return (
-    <div className='w-full  h-full flex flex-col gap-6 p-5 bg-fixed'>
-      <img src="../src/assets/logo.webp"/>
-      <h1 className='flex gap-1 items-center'>
-        <span className='text-2xl font-bold text-black'>Zidio Task Manager</span>
+    <div className="w-full  h-full flex flex-col gap-6 p-5 bg-fixed">
+      <img src="../src/assets/logo.webp" alt="zidio-logo"/>
+      <h1 className="flex gap-1 items-center">
+        <span className="text-2xl font-bold text-black">
+          Zidio Task Manager
+        </span>
       </h1>
 
-      <div className='flex-1 flex flex-col gap-y-5 py-8'>
+      <div className="flex-1 flex flex-col gap-y-5 py-8">
         {sidebarLinks.map((link) => (
           <NavLink el={link} key={link.label} />
         ))}
       </div>
 
-      <div className=''>
-        <button className='w-full flex gap-2 p-2 items-center text-lg text-gray-800'>
+      <div className="">
+        <button className="w-full flex gap-2 p-2 items-center text-lg text-gray-800">
           <MdSettings />
           <span>Settings</span>
         </button>
